@@ -1,0 +1,62 @@
+[
+  {
+    "name": "all_modules",
+    "type": "STRICT",
+    "module_sequence": [
+      {
+        "module": "SyncSwap",
+        "params": {
+          "network": "linea",
+          "from_token": "ETH",
+          "to_token": "USDT",
+          "amount_from": "5%",
+          "amount_to": "10%",
+          "min_amount_swap": 0.0001,
+          "swap_all_balance": true
+        }
+      },
+      {
+        "module": "SyncSwap",
+        "params": {
+          "network": "linea",
+          "from_token": "ETH",
+          "to_token": "USDT",
+          "amount_from": "5%",
+          "amount_to": "10%",
+          "min_amount_swap": 0.0001,
+          "swap_all_balance": true
+        }
+      }
+    ]
+  },
+  {
+    "name": "test",
+    "type": "NON-STRICT",
+    "module_sequence": [
+      {
+        "module": "SyncSwap",
+        "params": {
+          "network": "linea",
+          "from_token": "ETH",
+          "to_token": "USDT",
+          "amount_from": "5%",
+          "amount_to": "10%",
+          "min_amount_swap": 0.0001,
+          "swap_all_balance": true
+        }
+      },
+      {
+        "module": "Orbiter",
+        "params": {
+          "token": "",
+          "from_network": "",
+          "to_network": "",
+          "amount_from": 90,
+          "amount_to": 95,
+          "min_amount_bridge": 0,
+          "bridge_all_balance": false
+        }
+      }
+    ]
+  }
+]

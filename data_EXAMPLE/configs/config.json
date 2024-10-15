@@ -1,0 +1,102 @@
+{
+  "THREADS": 1,
+  "RETRY": 5,
+
+  "USE_SCENARIOS": false,
+  "SCENARIO": "all_modules",
+
+  "SLEEP_BETWEEN_MODULES": [1, 15],
+  "WALLET_RANDOMIZER": true,
+
+  "CHECK_GWEI": true,
+  "MAX_GWEI": 100,
+  "SLEEP_BETWEEN_GWEI_CHECKS": 20,
+
+  "TG_BOT_SEND": true,
+  "TG_USER_ID": 123,
+  "TG_TOKEN": "",
+  "TG_ID_CHANNEL": 0,
+
+  "MAX_GAS_CHARGE": {
+    "avalanche": 1,
+    "polygon": 0.5,
+    "ethereum": 7,
+    "bsc": 0.3,
+    "arbitrum": 3,
+    "optimism": 1.5,
+    "fantom": 0.5,
+    "zksync": 1,
+    "nova": 0.1,
+    "gnosis": 0.1,
+    "celo": 0.1,
+    "polygon_zkevm": 0.5,
+    "core": 0.1,
+    "harmony": 0.1,
+    "base": 0.5,
+    "scroll": 0.5,
+    "zora": 0.5,
+    "moonbeam": 0.5,
+    "moonriver": 0.5,
+    "canto": 0.5,
+    "metis": 0.5,
+    "linea": 0.5,
+    "mantle": 0.5,
+    "zeta": 0.5,
+    "blast": 0.5,
+    "mode": 0.5,
+    "opbnb": 0.5
+  },
+
+  "CEX_KEYS": {
+    "binance": {
+      "api_key": "your_api_key",
+      "api_secret": "your_api_secret"
+    },
+    "okx": {
+      "api_key": "your_api_key",
+      "api_secret": "your_api_secret"
+    },
+    "bitget": {
+      "api_key": "your_api_key",
+      "api_secret": "your_api_secret"
+    }
+  },
+
+  "RPCS_FOR_PROXY": [
+    "https://arbitrum.drpc.org",
+    "https://1rpc.io/linea",
+    "https://base.drpc.org",
+    "https://mainnet.base.org",
+    "https://rpc.ankr.com/eth",
+    "https://eth.drpc.org",
+    "https://rpc.eth.gateway.fm",
+    "https://rpc.scroll.io",
+    "https://scroll.drpc.org",
+    "https://1rpc.io/linea",
+    "https://bsc.drpc.org",
+    "https://polygon.drpc.org",
+    "https://optimism.drpc.org",
+    "https://zksync.drpc.org",
+    "https://mainnet.era.zksync.io"
+  ],
+  "MODULES": {
+    "SyncSwap": {
+      "network": "linea",
+      "from_token": "ETH",
+      "to_token": "USDT",
+      "amount_from": "30%",
+      "amount_to": "50%",
+      "min_amount_swap": 0,
+      "swap_all_balance": false
+    },
+    "Orbiter": {
+      "token": "eth",
+      "from_network": "linea",
+      "to_network": "arbitrum",
+      "amount_from": "90%",
+      "amount_to": "95%",
+      "min_amount_bridge": 0,
+      "bridge_all_balance": false
+    }
+  }
+}
