@@ -46,8 +46,7 @@ async def main():
     await executor.process_wallets()
 
 def setup_logger():
-
-    logging.getLogger('asyncio').setLevel(logging.CRITICAL)
+    logging.getLogger('asyncio').setLevel(logging.CRITICAL)  # Скрываем логи asyncio
 
     log_dir = 'results/logs'
     os.makedirs(log_dir, exist_ok=True)
@@ -65,11 +64,12 @@ def setup_logger():
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
 
-    # Get the root logger
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
-    # Add handlers to the logger
+    file_handler.setLevel(logging.DEBUG)
+    console_handler.setLevel(logging.INFO)
+
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
 
