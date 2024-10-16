@@ -7,7 +7,10 @@ logger = logging.getLogger(__name__)
 class Orbiter(IBridge):
     async def bridge(self) -> dict:
         logger.info('Bridge successful')
+
         return {
-            'from': "ETH",
-            'to': "USDT"
+            'token': "",
+            'from_network': "",
+            'to_network': "",
+            'amount': ""
         }
