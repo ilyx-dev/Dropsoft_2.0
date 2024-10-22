@@ -89,9 +89,27 @@
       "min_amount_swap": 0,
       "swap_all_balance": false
     },
+    "0xSwap": {
+      "network": "linea",
+      "from_token": "ETH",
+      "to_token": "USDT",
+      "amount_from": "30%",
+      "amount_to": "50%",
+      "min_amount_swap": 0,
+      "swap_all_balance": false
+    },
     "Orbiter": {
       "token": "eth",
-      "from_network": "linea",
+      "from_network": "zksync",
+      "to_network": "arbitrum",
+      "amount_from": "90%",
+      "amount_to": "95%",
+      "min_amount_bridge": 0,
+      "bridge_all_balance": false
+    },
+    "Owlto": {
+      "token": "eth",
+      "from_network": "zksync",
       "to_network": "arbitrum",
       "amount_from": "90%",
       "amount_to": "95%",
