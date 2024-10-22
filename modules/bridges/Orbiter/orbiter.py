@@ -43,9 +43,8 @@ class Orbiter(IBridge):
         amount_in_wei = int(self._client.w3.async_w3.to_wei(self._params.amount, 'ether'))
 
         await self._client.transactions.send(contract_address, encoded_data, amount_in_wei)
-        await asyncio.sleep(9)
+        await asyncio.sleep(8)
         logger.info(f"Bridge successful: {self._params.amount} {self._params.token.symbol} from {self._params.from_network.name} to {self._params.to_network.name}")
-
         return {
             'token': self._params.token,
             'from_network': self._params.from_network.name,
@@ -56,7 +55,7 @@ class Orbiter(IBridge):
     async def _fetch_routes_data(self):
         """Fetch route data from the Orbiter API"""
         async with aiohttp.ClientSession() as session:
-            async with session.get(ORBITER_API_URL) as response:
+            async with session.get(url=ORBITER_API_URL, proxy=self._client.w3._proxy) as response:
                 if response.status != 200:
                     raise Exception(f"Error fetching data from the Orbiter API: {response.status}")
                 data = await response.json()
