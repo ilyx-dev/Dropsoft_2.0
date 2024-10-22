@@ -127,9 +127,8 @@ class SyncSwap(ISwap):
                 tx_value=value,
             )
 
-            receipt = await client.w3.async_w3.eth.wait_for_transaction_receipt(tx_hash, timeout=180)
-            if receipt.status == 1:
-                logger.info(f"Transaction was successful: 0x{tx_hash.hex()}")
+            if 'status' in tx_hash and tx_hash['status'] == 1:
+                logger.info(f"Transaction was successful")
                 return {
                     'success': True,
                     'network': self._params.network.name,
@@ -138,8 +137,8 @@ class SyncSwap(ISwap):
                     'amount': amount_in
                 }
             else:
-                logger.error(f"Transaction failed: 0x{tx_hash.hex()}")
-                return {'success': False, 'tx_hash': tx_hash.hex()}
+                logger.error(f"Transaction failed: 0x{tx_hash}")
+                return {'success': False, 'tx_hash': tx_hash}
 
         except Exception as e:
             logger.warning(f"Warning: {e}")
@@ -169,14 +168,9 @@ class SyncSwap(ISwap):
 
         logger.info(f"Approval transaction sent")
 
-        # receipt = await client.w3.async_w3.eth.wait_for_transaction_receipt(tx_hash, timeout=180)
-        # if 'status' in receipt and receipt['status'] == 1:
-        #     return True
-        # else:
-        #     return False
+        if 'status' in tx_hash and tx_hash['status'] == 1:
+            return True
+        else:
+            return False
 
-        # receipt не дает нихуя свапнуть
-        # я не знаю это трабл библы или мой косяк, пока сделал костыль, вместе посмотрим
-
-        return True
 
