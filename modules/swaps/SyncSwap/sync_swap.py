@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import time
 from models.interfaces.iswap import ISwap
@@ -75,13 +74,9 @@ class SyncSwap(ISwap):
                 transaction_amount = int(amount_in * (10 ** decimals))
                 value = 0
 
-                approve_success = await self.approve_token(
+                await self.approve_token(
                     client, token_contract, contract_address, transaction_amount
                 )
-
-                if not approve_success:
-                    logger.error("Approval failed. Cannot proceed with swap.")
-                    return {"success": False, "error": "Approval failed"}
 
                 token_in_data_address = token_in_address
 
@@ -113,14 +108,6 @@ class SyncSwap(ISwap):
                 args=[paths, amount_out_min, deadline]
             )
 
-            # data = encoded_data
-            # print(data[:10])
-            # data = data[10:]
-            # while data:
-            #     print(data[:64])
-            #     data = data[64:]
-
-
             tx_hash = await client.transactions.send(
                 contract_address=contract_address,
                 encoded_data=encoded_data,
@@ -141,36 +128,37 @@ class SyncSwap(ISwap):
                 return {'success': False, 'tx_hash': tx_hash}
 
         except Exception as e:
-            logger.warning(f"Warning: {e}")
-            if 'expected a bool, int, byte or bytearray in first arg, or keyword of hexstr or text' in str(e):
-                return {
-                    'success': True,
-                    'network': self._params.network.name,
-                    'from': token_in_symbol,
-                    'to': token_out_symbol,
-                    'amount': amount_in
-                }
-            else:
-                return {'success': False, 'error': str(e)}
+            logger.error(f"Error: {e}")
+            # if 'expected a bool, int, byte or bytearray in first arg, or keyword of hexstr or text' in str(e):
+            #     return {
+            #         'success': True,
+            #         'network': self._params.network.name,
+            #         'from': token_in_symbol,
+            #         'to': token_out_symbol,
+            #         'amount': amount_in
+            #     }
+            # else:
+            #     return {'success': False, 'error': str(e)}
 
 
     async def approve_token(self, client, token_contract, spender, amount):
+        try:
+            owner = client.wallet.public_key
+            current_allowance = await token_contract.functions.allowance(owner, spender).call()
+            logger.info(f"Allowance: {current_allowance}")
 
-        encoded_data = token_contract.encode_abi(
-            'approve',
-            args=[spender, amount]
-        )
+            if current_allowance >= amount:
+                return
 
-        tx_hash = await client.transactions.send(
-            contract_address=token_contract.address,
-            encoded_data=encoded_data,
-        )
+            encoded_data = token_contract.encode_abi(
+                'approve',
+                args=[spender, amount]
+            )
 
-        logger.info(f"Approval transaction sent")
+            tx_hash = await client.transactions.send(
+                contract_address=token_contract.address,
+                encoded_data=encoded_data,
+            )
 
-        if 'status' in tx_hash and tx_hash['status'] == 1:
-            return True
-        else:
-            return False
-
-
+        except Exception as e:
+            logger.error(f"Approve error: {e}")
