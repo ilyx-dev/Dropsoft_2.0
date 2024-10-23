@@ -1,5 +1,8 @@
 import logging
 import time
+
+import w3.utils
+
 from models.interfaces.iswap import ISwap
 from models.params.swap_params import SwapParams
 from w3.core import Client
@@ -20,11 +23,10 @@ class SyncSwap(ISwap):
         my_address = client.wallet.public_key
 
         network_name = self._params.network.name
-
         network_data = NETWORKS.get(network_name)
+
         contract_address = network_data['contract_address']
         weth_address = self._params.network.get_token_by_symbol("WETH").address
-
 
         use_vault_false_pools = network_data['use_vault_false_pools']
 
@@ -34,25 +36,23 @@ class SyncSwap(ISwap):
         token_in_symbol = token_in.symbol
         token_out_symbol = token_out.symbol
 
-        if token_in.address == None:
-            token_in_address = ETH_ADDRESS
-
-        else:
-            token_in_address = client.w3.async_w3.to_checksum_address(token_in.address)
+        if token_in.address:
+            token_in_address = w3.utils.to_checksum_address(token_in.address)
             erc20_contract = client.contracts.get_erc20_contract(token_in_address)
             decimals = await erc20_contract.functions.decimals().call()
+
+        token_in_address = ETH_ADDRESS
 
         amount_in = self._params.amount
 
         pool_identifier = f"{token_in_symbol}-{token_out_symbol}"
         pool = network_data['pools'].get(pool_identifier)
 
-
         if not pool:
             pool_identifier = f"{token_out_symbol}-{token_in_symbol}"
             pool = network_data['pools'].get(pool_identifier)
             if not pool:
-                error_message = "Pool not found"
+                error_message = f"Pool not found {pool_identifier}"
                 raise ValueError(error_message)
 
         amount_out_min = 0
@@ -77,10 +77,7 @@ class SyncSwap(ISwap):
             token_contract = self._client.contracts.get_erc20_contract(token_in_address)
             transaction_amount = int(amount_in * (10 ** decimals))
             value = 0
-
-            await self.approve_token(
-                client, token_contract, contract_address, transaction_amount
-            )
+            await self.approve_token(client, token_contract, contract_address, transaction_amount)
 
             token_in_data_address = token_in_address
 
