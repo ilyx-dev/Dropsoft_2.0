@@ -40,8 +40,8 @@ class SyncSwap(ISwap):
             token_in_address = w3.utils.to_checksum_address(token_in.address)
             erc20_contract = client.contracts.get_erc20_contract(token_in_address)
             decimals = await erc20_contract.functions.decimals().call()
-
-        token_in_address = ETH_ADDRESS
+        else:
+            token_in_address = ETH_ADDRESS
 
         amount_in = self._params.amount
 
