@@ -8,6 +8,7 @@ ethereum_tokens = [
     Token('BNB','0xB8c77482e45F1F44dE1745F52C74426C631bDD52'),
     Token('USDC','0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
     Token('WBTC','0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'),
+    Token('WETH', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 ]
 
 optimism_tokens = [
@@ -17,6 +18,7 @@ optimism_tokens = [
     Token('USDC.e', '0x7F5c764cBc14f9669B88837ca1490cCa17c31607'),
     Token('LINK', '0x7F5c764cBc14f9669B88837ca1490cCa17c31607'),
     Token('WBTC', '0x68f180fcCe6836688e9084f035309E29Bf0A2095'),
+    Token('WETH', '0x4200000000000000000000000000000000000006')
 ]
 
 bsc_tokens = [
@@ -25,6 +27,7 @@ bsc_tokens = [
     Token('BUSD-T', '0x55d398326f99059fF775485246999027B3197955'),
     Token('USDC', '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d'),
     Token('BTCB', '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c'),
+    Token('WETH', '0x2170ed0880ac9a755fd29b2688956bd959f933f8')
 ]
 
 polygon_tokens = [
@@ -34,6 +37,7 @@ polygon_tokens = [
     Token('USDC', '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'),
     Token('USDC.e', '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'),
     Token('WBTC', '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6'),
+    Token('WETH', '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619')
 ]
 
 arbitrum_tokens = [
@@ -43,6 +47,7 @@ arbitrum_tokens = [
     Token('USDC', '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'),
     Token('LINK', '0xf97f4df75117a78c1A5a0DBb814Af92458539FB4'),
     Token('WBTC', '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f'),
+    Token('WETH', '0x82af49447d8a07e3bd95bd0d56f35241523fbab1')
 ]
 
 avalanche_tokens = [
@@ -51,6 +56,7 @@ avalanche_tokens = [
     Token('USDC', '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e'),
     Token('WBTC.e', '0x50b7545627a5162f82a992c33b87adc75187b218'),
     Token('TUSD', '0x1c20e891bab6b1727d14da358fae2984ed9b59eb'),
+    Token('WETH', '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab')
 ]
 
 zksync_tokens= [
@@ -59,12 +65,13 @@ zksync_tokens= [
     Token('USDC', '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4'),
     Token('WBTC', '0xBBeB516fb02a01611cBBE0453Fe3c580D7281011'),
     Token('DAI', '0x4b9eb6c0b6ea15176bbf62841c6b2a8a398cb656'),
+    Token('WETH', '0x5aea5775959fbc2557cc8789bc1bf90a239d9a91')
 ]
 
 linea_tokens = [
     Token('ETH'),
     Token('BUSD', '0x7d43AABC515C356145049227CeE54B608342c0ad'),
-    Token('USDC.e', '0x176211869cA2b568f2A7D4EE941E073a821EE1ff'),
+    Token('USDC', '0x176211869cA2b568f2A7D4EE941E073a821EE1ff'),
     Token('WBTC', '0x3aAB2285ddcDdaD8edf438C1bAB47e1a9D05a9b4'),
     Token('USDT', '0xA219439258ca9da29E9Cc4cE5596924745e12B93'),
     Token('wstETH', '0xB5beDd42000b71FddE22D3eE8a79Bd49A568fC8F'),
@@ -73,6 +80,7 @@ linea_tokens = [
     Token('wrsETH', '0xD2671165570f41BBB3B0097893300b6EB6101E6C'),
     Token('STONE', '0x93F4d0ab6a8B4271f4a28Db399b5E30612D21116'),
     Token('ZERO', '0x78354f8DcCB269a615A7e0a24f9B0718FDC3C7A7'),
+    Token('WETH', '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f')
 ]
 
 base_tokens = [
@@ -81,6 +89,7 @@ base_tokens = [
     Token('USDbC', '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA'),
     Token('USDT', '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2'),
     Token('weETH', '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2'),
+    Token('WETH', '0x4200000000000000000000000000000000000006')
 ]
 
 zora_tokens = [
@@ -90,6 +99,7 @@ zora_tokens = [
 scroll_tokens = [
     Token('ETH'),
     Token('USDT', '0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df'),
+    Token('WETH', '0x5300000000000000000000000000000000000004'),
     Token('USDC', '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4'),
     Token('WBTC', '0x3C1BCa5a656e69edCD0D4E36BEbb3FcDAcA60Cf1'),
     Token('wstETH', '0xf610A9dfB7C89644979b4A0f27063E9e7d7Cda32'),
@@ -102,11 +112,13 @@ metis_tokens = [
     Token('WBTC', '0xa5B55ab1dAF0F8e1EFc0eB1931a957fd89B918f4'),
     Token('m.USDT', '0xbB06DCA3AE6887fAbF931640f67cab3e3a16F4dC'),
     Token('m.USDC', '0xEA32A96608495e54156Ae48931A7c20f0dcc1a21'),
+    Token('WETH', '0x420000000000000000000000000000000000000a')
 ]
 
 blast_tokens = [
     Token('ETH'),
     Token('WBTC', '0xF7bc58b8D8f97ADC129cfC4c9f45Ce3C0E1D2692'),
+    Token('WETH', '0x4300000000000000000000000000000000000004')
 ]
 
 opbnb_tokens = [
