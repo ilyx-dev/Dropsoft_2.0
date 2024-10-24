@@ -14,9 +14,6 @@ ORBITER_API_URL = "https://api.orbiter.finance/sdk/routers/v2"
 
 class Orbiter(IBridge):
 
-    def __init__(self, client: Client, params: BridgeParams):
-        super().__init__(client, params)
-
     async def bridge(self) -> dict:
         contract_address = ORBITER_CONTRACT_ADDRESSES.get(self._params.from_network.name)
         if contract_address is None:

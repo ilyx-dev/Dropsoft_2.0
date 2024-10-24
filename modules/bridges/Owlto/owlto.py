@@ -4,30 +4,23 @@ import aiohttp
 from models.interfaces.ibridge import IBridge
 from w3.core.client import Client
 from models.params.bridge_params import BridgeParams
+from modules.bridges.Owlto.config_owlto import NETWORK_MAPPING
 
 logger = logging.getLogger(__name__)
 
 
 class Owlto(IBridge):
-    def __init__(self, client: Client, params: BridgeParams):
-        super().__init__(client, params)
 
     async def bridge(self) -> dict:
         """Main bridge function."""
         data = await self._get_bridge_data()
 
-        if data.get('status', {}).get('code') != 0:
+        if data['status']['code'] != 0:
             raise ValueError(f"Error retrieving data for transaction: {data['status']['message']}")
 
         self.tx_hash = await self._execute_bridge_transactions(data)
 
-        await asyncio.sleep(7)  # Wait for the transaction to be processed
-        result = await self.verify()
-
-        if result:
-            logger.info("Bridge verified successfully!")
-        else:
-            raise logger.error("Transaction verification failed.")
+        await asyncio.sleep(4)
 
         return {
             'token': self._params.token,
@@ -43,12 +36,12 @@ class Owlto(IBridge):
                     "https://owlto.finance/api/bridge_api/v1/get_build_tx",
                     json={
                         "from_address": self._client.wallet.public_key,
-                        "from_chain_name": self._params.from_network.name,
+                        "from_chain_name": NETWORK_MAPPING.get(str(self._params.from_network.name), str(self._params.from_network.name)),
                         "to_address": self._client.wallet.public_key,
-                        "to_chain_name": self._params.to_network.name,
-                        "token_name": self._params.token,
-                        "ui_value": self._params.amount,
-                        "value_include_gas_fee": 'true',
+                        "to_chain_name": NETWORK_MAPPING.get(str(self._params.to_network.name), str(self._params.to_network.name)),
+                        "token_name": str(self._params.token.symbol),
+                        "ui_value": str(self._params.amount),
+                        "value_include_gas_fee": True,
                     },
                     proxy=self._client.w3.proxy
             ) as response:
@@ -61,16 +54,18 @@ class Owlto(IBridge):
         transfer_body = data['data']['txs'].get('transfer_body')
         to_approve = approve_body.get('to') if approve_body else None
         to_transfer = transfer_body.get('to') if transfer_body else None
+        value_approve = approve_body.get('value') if approve_body else None
+        value_transfer = transfer_body.get('value') if transfer_body else None
 
         if approve_body:
-            await self._client.transactions.send(encoded_data=approve_body, contract_address=to_approve, tx_value=0)
+            await self._client.transactions.send(encoded_data=approve_body['data'], contract_address=self._client.w3.async_w3.to_checksum_address(to_approve), tx_value=int(value_approve))
             logger.info("Approve transaction sent successfully!")
         else:
             logger.info("No approve transaction required.")
 
-        transfer_tx_hash = await self._client.transactions.send(encoded_data=transfer_body, contract_address=to_transfer, tx_value=0)
+        transfer_tx_hash = await self._client.transactions.send(encoded_data=transfer_body['data'], contract_address=self._client.w3.async_w3.to_checksum_address(to_transfer), tx_value=int(value_transfer))
         logger.info("Transfer transaction sent successfully!")
-        return transfer_tx_hash
+        return transfer_tx_hash['transactionHash'].hex()
 
     async def verify(self) -> bool:
         """Verify receipt of funds via API."""
