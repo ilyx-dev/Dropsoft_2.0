@@ -1,6 +1,7 @@
 from models.enums.module_type import ModuleType
 from modules.bridges.Orbiter.orbiter import Orbiter
 from modules.bridges.Owlto.owlto import Owlto
+from modules.swaps.BaseSwap.base_swap import BaseSwap
 from modules.swaps.SyncSwap.sync_swap import SyncSwap
 from modules.swaps.NullXSwap.null_x_swap import NullXSwap
 
@@ -65,6 +66,13 @@ modules_registry = {
             'Optimism': ['eth', 'usdc', 'usdt'],
             'Polygon': ['eth', 'usdc', 'usdt'],
             'Scroll': ['eth', 'usdc', 'usdt'],
+        },
+    },
+    'BaseSwap': {
+        'type': ModuleType.SWAP,
+        'class': BaseSwap,
+        'supported_chains': {
+            'Base': ['eth', 'usdc', 'usdt', 'USDbC', 'weETH', 'wstETH', 'WETH', 'DOG', 'DAI', 'DAI+'],
         },
     },
 }
