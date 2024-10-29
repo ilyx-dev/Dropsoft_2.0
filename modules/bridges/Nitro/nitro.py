@@ -74,7 +74,7 @@ class Nitro(IBridge):
                 'partnerId': 1,
                 'slippageTolerance': 1,
                 'destFuel': 0
-            }) as response:
+            },proxy=self._client.w3.proxy) as response:
                 response.raise_for_status()
                 return await response.json()
 
@@ -85,7 +85,7 @@ class Nitro(IBridge):
         })
 
         async with aiohttp.ClientSession() as session:
-            async with session.post(NITRO_API_TX_URL, json=quote) as response:
+            async with session.post(NITRO_API_TX_URL, json=quote, proxy=self._client.w3.proxy) as response:
                 response.raise_for_status()
                 return await response.json()
 
