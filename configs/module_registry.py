@@ -1,4 +1,5 @@
 from models.enums.module_type import ModuleType
+from modules.bridges.Nitro.nitro import Nitro
 from modules.bridges.Orbiter.orbiter import Orbiter
 from modules.bridges.Owlto.owlto import Owlto
 from modules.swaps.BaseSwap.base_swap import BaseSwap
@@ -36,6 +37,25 @@ modules_registry = {
     'Owlto': {
         'type': ModuleType.BRIDGE,
         'class': Owlto,
+        'supported_chains': {
+            'Ethereum': ['eth', 'usdc', 'usdt', 'wstETH', 'weETH'],
+            'Zora': ['eth'],
+            'Optimism': ['eth', 'usdc', 'usdt', 'wstETH'],
+            'ZKSync': ['eth', 'usdc', 'usdt'],
+            'Blast': ['eth', 'weETH'],
+            'BSC': ['eth', 'usdc', 'usdt'],
+            'OpBNB': ['eth'],
+            'Metis': ['eth', 'usdc', 'usdt'],
+            'Polygon': ['eth', 'usdc', 'usdt'],
+            'Arbitrum': ['eth', 'usdc', 'usdt', 'wstETH', 'weETH'],
+            'Linea': ['eth', 'usdc', 'usdt', 'wstETH', 'weETH'],
+            'Base': ['eth', 'usdc'],
+            'Scroll': ['eth', 'usdc', 'usdt', 'wstETH', 'weETH'],
+        },
+    },
+    'Nitro': {
+        'type': ModuleType.BRIDGE,
+        'class': Nitro,
         'supported_chains': {
             'Ethereum': ['eth', 'usdc', 'usdt', 'wstETH', 'weETH'],
             'Zora': ['eth'],
