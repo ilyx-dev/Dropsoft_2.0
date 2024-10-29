@@ -14,11 +14,13 @@ class IBridge(IModule[BridgeParams]):
     def __init__(self, client: Client, params: BridgeParams):
         super().__init__(client, params)
         self._to_network_client = None
+        self._to_network_token = None
         self._pre_bridge_balance = None
 
     async def execute(self) -> dict:
         self._to_network_client = await self._client.switch_network(convert_to_web3_network(self._params.to_network))
-        self._pre_bridge_balance = await self._to_network_client.wallet.get_balance(self._params.token.address)
+        self._to_network_token = self._params.to_network.get_token_by_symbol(self._params.token.symbol)
+        self._pre_bridge_balance = await self._to_network_client.wallet.get_balance(self._to_network_token.address)
         logger.debug(f"Pre-bridge balance of {self._params.token.symbol} on {self._params.to_network.name}: {self._pre_bridge_balance.get_converted_amount()}")
 
         bridge_result = await self.bridge()
@@ -30,7 +32,7 @@ class IBridge(IModule[BridgeParams]):
         pass
 
     async def verify(self) -> bool:
-        post_bridge_balance = await self._to_network_client.wallet.get_balance(self._params.token.address)
+        post_bridge_balance = await self._to_network_client.wallet.get_balance(self._to_network_token)
         post_bridge_amount = post_bridge_balance.get_converted_amount()
         logger.debug(f"Post-bridge balance of {self._params.token.symbol} on {self._params.to_network.name}: {post_bridge_amount}")
 
