@@ -1,5 +1,6 @@
 import asyncio
 import logging
+
 import aiohttp
 from decimal import Decimal
 
@@ -18,7 +19,10 @@ NITRO_API_TX_URL = 'https://api-beta.pathfinder.routerprotocol.com/api/v2/transa
 class Nitro(IBridge):
 
     async def bridge(self) -> dict:
-        quote = await self._get_quote()
+        # TODO: Изменить token_in и token_out после изменений интерфеса
+        token_in = self._params.token.address or ZERO_ADDRESS
+        token_out = self._params.to_network.get_token_by_symbol(self._params.token.symbol).address or ZERO_ADDRESS
+        quote = await self._get_quote(token_in, token_out)
         if not quote:
             raise ValueError("No quote available for this route.")
 
@@ -28,16 +32,16 @@ class Nitro(IBridge):
 
         tx_data = tx_data['txn']
 
-        if self._params.token.address != ZERO_ADDRESS:
+        if token_in != ZERO_ADDRESS:
             token_contract = self._client.contracts.get_erc20_contract(self._params.token.address)
-            spender = quote.get('to')
+            spender = tx_data['to']
             amount = int(self._params.amount * 10 ** (await token_contract.functions.decimals().call()))
-            await self.approve_token(self._client, token_contract, spender, amount)
+            await self.approve_token(self._client, token_contract, w3.utils.to_checksum_address(spender), amount)
 
         await self._client.transactions.send(
             encoded_data=tx_data['data'],
             contract_address=w3.utils.to_checksum_address(tx_data['to']),
-            value=int(tx_data['value'], 16)
+            tx_value=int(tx_data['value'], 16)
         )
 
         logger.info(f"Bridge successful: {self._params.amount} {self._params.token.symbol} from {self._params.from_network.name} to {self._params.to_network.name}")
@@ -49,14 +53,15 @@ class Nitro(IBridge):
             'amount': self._params.amount
         }
 
-    async def _get_quote(self) -> dict:
-        token_in = self._params.token.address or ZERO_ADDRESS
-        token_out = self._params.to_network.get_token_by_symbol(self._params.token.symbol).address or ZERO_ADDRESS
-
-        # Проверка и вычисление количества десятичных знаков для корректной передачи параметров
+    async def _get_quote(self, token_in, token_out) -> dict:
         token_in_address = w3.utils.to_checksum_address(token_in)
-        token_contract = self._client.contracts.get_erc20_contract(token_in_address)
-        decimals = await token_contract.functions.decimals().call()
+
+        if token_in == ZERO_ADDRESS:
+            decimals = 18
+        else:
+            token_contract = self._client.contracts.get_erc20_contract(token_in_address)
+            decimals = await token_contract.functions.decimals().call()
+
         amount_in_smallest_unit = int(self._params.amount * (10 ** decimals))
 
         async with aiohttp.ClientSession() as session:
@@ -84,10 +89,11 @@ class Nitro(IBridge):
                 response.raise_for_status()
                 return await response.json()
 
-    async def approve_token(self, client, token_contract, spender, amount) -> dict:
+    async def approve_token(self, client, token_contract, spender, amount):
         owner = client.wallet.public_key
         current_allowance = await token_contract.functions.allowance(owner, spender).call()
-        logger.info(f"Current allowance: {current_allowance}")
+        decimals = await token_contract.functions.decimals().call()
+        logger.info(f"Current allowance: {current_allowance/10 ** decimals}")
 
         if current_allowance >= amount:
             logger.info("Allowance is sufficient, no need to approve.")
@@ -97,8 +103,5 @@ class Nitro(IBridge):
             'approve',
             args=[spender, amount]
         )
-
-        await client.transactions.send(
-            contract_address=token_contract.address,
-            encoded_data=encoded_data,
-        )
+        await self._client.transactions.send(encoded_data, token_contract.address)
+        logger.info(f"Approved token: {token_contract.address}")
