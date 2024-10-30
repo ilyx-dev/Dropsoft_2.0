@@ -16,7 +16,7 @@ class ConfigManager:
             'THREADS', 'RETRY', 'USE_SCENARIOS', 'SCENARIO',
             'SLEEP_BETWEEN_MODULES', 'WALLET_RANDOMIZER',
             'MAX_GWEI', 'MAX_GAS_CHARGE', 'CHECK_GWEI',
-            'SLEEP_BETWEEN_GWEI_CHECKS', 'MODULES'
+            'SLEEP_BETWEEN_GWEI_CHECKS', 'MODULES', 'WAIT_VERIFY_MODULE'
         ]
         return self._get_specific_config(wallet_processor_keys)
 

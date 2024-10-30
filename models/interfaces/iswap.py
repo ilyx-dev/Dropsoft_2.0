@@ -37,5 +37,4 @@ class ISwap(IModule[SwapParams]):
             logger.info(f"Swap verified successfully. Balance difference: {balance_difference}")
             return True
         else:
-            logger.info(f"Swap verification failed. Balance difference: {balance_difference}")
             return False

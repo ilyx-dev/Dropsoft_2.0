@@ -32,7 +32,7 @@ class IBridge(IModule[BridgeParams]):
         pass
 
     async def verify(self) -> bool:
-        post_bridge_balance = await self._to_network_client.wallet.get_balance(self._to_network_token)
+        post_bridge_balance = await self._to_network_client.wallet.get_balance(self._to_network_token.address)
         post_bridge_amount = post_bridge_balance.get_converted_amount()
         logger.debug(f"Post-bridge balance of {self._params.token.symbol} on {self._params.to_network.name}: {post_bridge_amount}")
 
@@ -42,5 +42,4 @@ class IBridge(IModule[BridgeParams]):
             logger.info(f"Bridge verified successfully. Balance difference: {balance_difference}")
             return True
         else:
-            logger.info(f"Bridge verification failed. Balance difference: {balance_difference}")
             return False

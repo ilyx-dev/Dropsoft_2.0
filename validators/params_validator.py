@@ -1,6 +1,4 @@
 from configs.networks import Networks
-from configs.params_registry import module_type_to_params_class
-from models.interfaces.iparams import IParams
 from models.network import Network
 from models.token import Token
 
@@ -18,7 +16,7 @@ class ParamsValidator:
         self._module_entry = modules_registry.get(module_name)
         if not self._module_entry:
             raise ValueError(f"Module {module_name} is not found in the registry.")
-        self.supported_chains = self._module_entry['supported_chains']
+        self.supported_chains = self._module_entry.get('supported_chains')
 
     def validate_network(self, network_name: str) -> Network:
         """
@@ -62,13 +60,3 @@ class ParamsValidator:
             )
 
         return network.get_token_by_symbol(token_symbol)
-
-
-    async def get_params(self, params_data, private_key: str, proxy: str) -> IParams:
-        module_type = self._module_entry['type']
-
-        params_class = module_type_to_params_class.get(module_type)
-        if not params_class:
-            raise ValueError(f"No parameter class for '{module_type.name}' type")
-
-        return await params_class(params_data, self, private_key, proxy)

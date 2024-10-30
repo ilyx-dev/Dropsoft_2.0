@@ -20,10 +20,10 @@ class Owlto(IBridge):
 
         self.tx_hash = await self._execute_bridge_transactions(data)
 
-        logger.info(f"Bridge successful: {self._params.amount} {self._params.token.symbol} from {self._params.from_network.name} to {self._params.to_network.name}")
+        await asyncio.sleep(4)
 
         return {
-            'token': self._params.token,
+            'token': self._params.token.symbol,
             'from_network': self._params.from_network.name,
             'to_network': self._params.to_network.name,
             'amount': self._params.amount
