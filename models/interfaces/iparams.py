@@ -1,47 +1,43 @@
 from abc import ABC, abstractmethod
 
+from validators.params_validator import ParamsValidator
+
+
 class IParams(ABC):
     """
-    Interface for parameter classes used in modules.
-    Module developers should inherit from this class when creating parameter classes for their modules.
+    Интерфейс для классов параметров, используемых в модулях.
+    Разработчики модулей должны наследоваться от этого класса при создании параметров для своих модулей.
     """
 
-    def __init__(self, *args, **kwargs):
-        """
-        Common initialization logic for all parameter classes.
-        """
-        super().__init__(*args, **kwargs)
-        # Any common setup can be done here
-        # For example, initializing instance variables
-        # self.some_common_variable = None
-
     @abstractmethod
-    async def __ainit__(self, params: dict, validator, *args, **kwargs) -> None:
+    def __init__(self, params: dict, validator: ParamsValidator):
         """
-        Asynchronous initializer for parameter classes.
-
-        Args:
-            params (dict): A dictionary of parameters.
-            validator: An object responsible for validating parameters.
+        Общая инициализация для всех классов параметров.
         """
         pass
 
     @abstractmethod
-    def __repr__(self) -> str:
+    def validate_selection_params(self, supported_chains: dict) -> None:
         """
-        Return a string representation of the parameter object.
+        Валидирует параметры, необходимые для выбора модуля (например, сети, токены).
+        Должен выбрасывать исключение, если валидация не пройдена.
+        """
+        pass
 
-        Returns:
-            str: String representation of the object.
+    @abstractmethod
+    async def validate_amount_params(self, client) -> None:
+        """
+        Асинхронно валидирует и обрабатывает параметры, связанные с количеством.
+        Должен выбрасывать исключение, если валидация не пройдена.
         """
         pass
 
     @abstractmethod
     def get_chain(self):
         """
-        Return the network or chain associated with these parameters.
+        Возвращает сеть или цепочку, связанную с этими параметрами.
 
         Returns:
-            The network or chain object.
+            Объект сети или цепочки.
         """
         pass

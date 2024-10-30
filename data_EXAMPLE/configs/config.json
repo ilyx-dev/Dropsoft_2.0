@@ -80,6 +80,13 @@
     "https://mainnet.era.zksync.io"
   ],
   "MODULES": {
+    "Zora.mint": {
+      "min_mint_count": 1,
+      "max_mint_count": 5,
+
+      "min_mint_price": "0.000001",
+      "max_mint_price": "0.00001"
+    },
     "SyncSwap": {
       "network": "linea",
       "from_token": "ETH",
@@ -113,6 +120,15 @@
       "to_network": "arbitrum",
       "amount_from": "90%",
       "amount_to": "95%",
+      "min_amount_bridge": 0,
+      "bridge_all_balance": false
+    },
+    "Nitro": {
+      "token": "eth",
+      "from_network": "scroll",
+      "to_network": "linea",
+      "amount_from": "20%",
+      "amount_to": "30%",
       "min_amount_bridge": 0,
       "bridge_all_balance": false
     }

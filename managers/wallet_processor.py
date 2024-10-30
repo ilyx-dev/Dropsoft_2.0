@@ -23,7 +23,7 @@ class WalletProcessor:
         self._module_factory = module_factory
         self._modules_registry = modules_registry
         self._config = config
-        self._wallet_histories = {}
+        self._wallet_histories: dict = {}
         self._semaphore = asyncio.Semaphore(self._config['THREADS'])  # THREADS
 
     async def process_wallets(self):
@@ -52,7 +52,6 @@ class WalletProcessor:
         wallet_address = get_wallet_address_from_private_key(private_key)
 
         wallet_address_var.set(wallet_address)
-        proxy = await self._proxy_manager.get_random_proxy()
         self._wallet_histories[wallet_address] = []
 
         scenario_name = self._config['SCENARIO']
@@ -63,65 +62,89 @@ class WalletProcessor:
             scenario['module_sequence'], len(scenario['module_sequence']))
 
         for module in modules:
-            validator = ParamsValidator(module['module'], self._modules_registry)
-            # TODO: постараться переделать
-            params = await validator.get_params(module['params'], private_key, proxy)
-            network = params.get_chain()
-
             if self._config['CHECK_GWEI']:
                 await wait_gwei(self._config['MAX_GWEI'], self._config['SLEEP_BETWEEN_GWEI_CHECKS'])
 
-            client = await Client(private_key, convert_to_web3_network(network), proxy)
-            module_instance = self._module_factory.get_module(module['module'], client, params)
-            # Executing module
+            module_name_or_type = module['module']
+            params = module['params']
+
+            proxy = await self._proxy_manager.get_random_proxy()
+
+            module_instance = await self._module_factory.create_module_instance(
+                module_name_or_type,
+                params,
+                private_key,
+                proxy
+            )
+
             module_result = await module_instance.execute()
-            if not await module_instance.verify():
-                pass
+
+            # Wait for the module execution to complete
+            wait_time_minutes = self._config['WAIT_EXECUTION_MODULE']
+            success = await self.wait_for_module(module_instance, wait_time_minutes)
+
+            if not success:
+                logger.error(f"Module {module_name_or_type} did not complete within the expected time.")
+                continue
 
             # SLEEP_BETWEEN_MODULES
             min_sleep, max_sleep = self._config['SLEEP_BETWEEN_MODULES']
-            sleep_time = random.uniform(min_sleep, max_sleep)
-            logger.info(f"Sleeping for {sleep_time:.2f} seconds between modules")
-            await asyncio.sleep(sleep_time)
+            await self.wait_between_modules(min_sleep, max_sleep)
 
-            module_type = self._module_factory.get_module_type(module['module'])
-
+            module_type = self._module_factory.determine_module_type(module_name_or_type).name
             result = {module_type: module_result}
-
             self._wallet_histories[wallet_address].append(result)
 
-    async def _process_wallet_via_module(self, private_key, module_name):
+    async def _process_wallet_via_module(self, private_key, module_name_or_type):
         wallet_address = get_wallet_address_from_private_key(private_key)
+
         wallet_address_var.set(wallet_address)
-
-        proxy = await self._proxy_manager.get_random_proxy()
         self._wallet_histories[wallet_address] = []
-
-        module_config = self._config['MODULES'].get(module_name)
-        if not module_config:
-            logger.error(f"No configuration found for module {module_name}")
-            return
-
-        validator = ParamsValidator(module_name, self._modules_registry)
-        params = await validator.get_params(module_config, private_key, proxy)
-
-        network = params.get_chain()
 
         if self._config['CHECK_GWEI']:
             await wait_gwei(self._config['MAX_GWEI'], self._config['SLEEP_BETWEEN_GWEI_CHECKS'])
 
-        client = await Client(private_key, convert_to_web3_network(network), proxy)
-        module_instance = self._module_factory.get_module(module_name, client, params)
+        params = self._config['MODULES'][module_name_or_type]
+
+        proxy = await self._proxy_manager.get_random_proxy()
+
+        module_instance = await self._module_factory.create_module_instance(
+            module_name_or_type,
+            params,
+            private_key,
+            proxy
+        )
+
         module_result = await module_instance.execute()
 
-        if not await module_instance.verify():
-            pass
+        # Wait for the module execution to complete
+        wait_time_minutes = self._config['WAIT_VERIFY_MODULE']
+        success = await self.wait_for_module(module_instance, wait_time_minutes)
 
-        module_type = self._module_factory.get_module_type(module_name)
+        if not success:
+            logger.error(f"Module {module_name_or_type} did not complete within the expected time.")
+
+        # SLEEP_BETWEEN_MODULES
+        min_sleep, max_sleep = self._config['SLEEP_BETWEEN_MODULES']
+        await self.wait_between_modules(min_sleep, max_sleep)
+
+        module_type = self._module_factory.determine_module_type(module_name_or_type).name
         result = {module_type: module_result}
         self._wallet_histories[wallet_address].append(result)
 
-        min_sleep, max_sleep = self._config['SLEEP_BETWEEN_MODULES']
+    async def wait_between_modules(self, min_sleep, max_sleep):
         sleep_time = random.uniform(min_sleep, max_sleep)
-        logger.info(f"Sleeping for {sleep_time:.2f} seconds after executing module {module_name}")
+        logger.info(f"Sleeping for {sleep_time:.2f} seconds between modules")
         await asyncio.sleep(sleep_time)
+
+    async def wait_for_module(self, module_instance, timeout_minutes):
+        total_wait_time = 0
+        check_interval = 60
+
+        while total_wait_time < timeout_minutes * 60:
+            if await module_instance.verify():
+                return True
+            await asyncio.sleep(check_interval)
+            total_wait_time += check_interval
+
+        return False

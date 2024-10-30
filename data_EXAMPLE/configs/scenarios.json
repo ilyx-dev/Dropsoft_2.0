@@ -8,7 +8,7 @@
         "params": {
           "network": "linea",
           "from_token": "ETH",
-          "to_token": "USDT",
+          "to_token": "",
           "amount_from": "5%",
           "amount_to": "10%",
           "min_amount_swap": 0.0001,
@@ -19,7 +19,7 @@
         "module": "SyncSwap",
         "params": {
           "network": "linea",
-          "from_token": "ETH",
+          "from_token": "",
           "to_token": "USDT",
           "amount_from": "5%",
           "amount_to": "10%",

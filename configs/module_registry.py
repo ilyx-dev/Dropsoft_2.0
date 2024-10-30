@@ -5,8 +5,13 @@ from modules.bridges.Owlto.owlto import Owlto
 from modules.swaps.BaseSwap.base_swap import BaseSwap
 from modules.swaps.SyncSwap.sync_swap import SyncSwap
 from modules.swaps.NullXSwap.null_x_swap import NullXSwap
+from modules.zora.zora_mint import ZoraMint
 
 modules_registry = {
+    'Zora.mint': {
+        'type': ModuleType.ZORA_MINT,
+        'class': ZoraMint,
+    },
     'SyncSwap': {
         'type': ModuleType.SWAP,
         'class': SyncSwap,
@@ -82,7 +87,7 @@ modules_registry = {
             'Base': ['eth', 'usdc', 'usdt'],
             'Blast': ['eth', 'usdc', 'usdt'],
             'BSC': ['eth', 'usdc', 'usdt'],
-            'Linea': ['eth', 'usdc', 'usdt'],
+            'Linea': ['eth', 'usdc', 'usdt', 'wstETH'],
             'Optimism': ['eth', 'usdc', 'usdt'],
             'Polygon': ['eth', 'usdc', 'usdt'],
             'Scroll': ['eth', 'usdc', 'usdt'],

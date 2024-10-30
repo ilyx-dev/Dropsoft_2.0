@@ -12,7 +12,7 @@ class Network:
     tokens: List[Token]
 
     def __repr__(self):
-        return (f"Token(name={self.name}, rpcs={self.rpcs}, "
+        return (f"Network(name={self.name}, rpcs={self.rpcs}, "
                 f"chain_id={self.chain_id}, "
                 f"tx_type={self.tx_type}, tokens={self.tokens})")
 
