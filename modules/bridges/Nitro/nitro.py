@@ -5,7 +5,6 @@ import aiohttp
 from decimal import Decimal
 
 import w3.utils
-from web3 import Web3
 from models.interfaces.ibridge import IBridge
 from w3.core.client import Client
 
