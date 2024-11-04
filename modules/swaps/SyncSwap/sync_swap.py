@@ -125,12 +125,8 @@ class SyncSwap(ISwap):
 
 
     async def approve_token(self, client, token_contract, spender, amount):
+
         owner = client.wallet.public_key
-        print(f'Token contract {token_contract}')
-        print(token_contract.address)
-        print(f'Owner {w3.utils.to_checksum_address(owner)}')
-        print(f'Spender {w3.utils.to_checksum_address(spender)}')
-        print(f'Amount {amount}')
         current_allowance = await token_contract.functions.allowance(owner, spender).call()
         logger.info(f"Allowance: {current_allowance}")
 
