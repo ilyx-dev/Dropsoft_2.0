@@ -19,7 +19,6 @@ NITRO_API_TX_URL = 'https://api-beta.pathfinder.routerprotocol.com/api/v2/transa
 class Nitro(IBridge):
 
     async def bridge(self) -> dict:
-        # TODO: Изменить token_in и token_out после изменений интерфеса
         token_in = self._params.token.address or ZERO_ADDRESS
         token_out = self._params.to_network.get_token_by_symbol(self._params.token.symbol).address or ZERO_ADDRESS
         quote = await self._get_quote(token_in, token_out)
@@ -74,7 +73,7 @@ class Nitro(IBridge):
                 'partnerId': 1,
                 'slippageTolerance': 1,
                 'destFuel': 0
-            }) as response:
+            }, proxy=self._client.w3.proxy) as response:
                 response.raise_for_status()
                 return await response.json()
 
@@ -85,7 +84,7 @@ class Nitro(IBridge):
         })
 
         async with aiohttp.ClientSession() as session:
-            async with session.post(NITRO_API_TX_URL, json=quote) as response:
+            async with session.post(NITRO_API_TX_URL, json=quote, proxy=self._client.w3.proxy) as response:
                 response.raise_for_status()
                 return await response.json()
 

@@ -2,6 +2,7 @@ from models.enums.module_type import ModuleType
 from modules.bridges.Nitro.nitro import Nitro
 from modules.bridges.Orbiter.orbiter import Orbiter
 from modules.bridges.Owlto.owlto import Owlto
+from modules.bridges.Relay.reley import Relay
 from modules.swaps.BaseSwap.base_swap import BaseSwap
 from modules.swaps.SyncSwap.sync_swap import SyncSwap
 from modules.swaps.NullXSwap.null_x_swap import NullXSwap
@@ -102,6 +103,19 @@ modules_registry = {
             'Base': ['eth', 'usdc', 'usdt', 'USDbC', 'weETH', 'wstETH', 'WETH', 'DOG', 'DAI', 'DAI+'],
         },
     },
+    'Relay': {
+        'type': ModuleType.BRIDGE,
+        'class': Relay,
+        'supported_chains': {
+            'Ethereum': ['eth', 'usdc', 'usdt', 'WBTC', 'WETH'],
+            'Optimism': ['eth','WBTC','WETH'],
+            'ZKSync': ['eth', 'usdc', 'WETH', 'WBTC'],
+            'Blast': ['eth', 'WETH',],
+            'Polygon': ['WETH', 'usdt'],
+            'Arbitrum': ['eth', 'usdc', 'usdt', 'WBTC', 'WETH'],
+            'Linea': ['eth', 'WETH'],
+            'Base': ['eth', 'usdc','WETH'],
+            'Scroll': ['eth', 'WETH']
     'OdosSwap': {
         'type': ModuleType.SWAP,
         'class': OdosSwap,
