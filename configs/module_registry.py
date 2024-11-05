@@ -77,8 +77,6 @@ modules_registry = {
             'Linea': ['eth', 'usdc', 'usdt'],
             'Base': ['eth', 'usdc'],
             'Scroll': ['usdc', 'usdt'],
-            'Taiko': ['eth', 'WETH'],
-            'Tron': ['usdt']
         },
     },
     '0xSwap': {
@@ -110,15 +108,14 @@ modules_registry = {
         'supported_chains': {
             'Ethereum': ['eth', 'usdc', 'usdt'],
             'Optimism': ['eth', 'usdc'],
-            'Fantom': ['usdc'],
             'BSC': ['usdt'],
             'Polygon': ['usdc', 'usdt'],
             'Arbitrum': ['eth', 'usdc', 'usdt'],
             'Linea': ['eth'],
             'Base': ['eth', 'usdc'],
             'Avalanche': ['usdc', 'usdt'],
-            'Kava': ['usdt'],
-            'Mantle': ['usdc', 'usdt']
+        }
+    },
     'Relay': {
         'type': ModuleType.BRIDGE,
         'class': Relay,
@@ -132,6 +129,8 @@ modules_registry = {
             'Linea': ['eth', 'WETH'],
             'Base': ['eth', 'usdc','WETH'],
             'Scroll': ['eth', 'WETH']
+        }
+    },
     'OdosSwap': {
         'type': ModuleType.SWAP,
         'class': OdosSwap,
