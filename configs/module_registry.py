@@ -2,6 +2,7 @@ from models.enums.module_type import ModuleType
 from modules.bridges.Nitro.nitro import Nitro
 from modules.bridges.Orbiter.orbiter import Orbiter
 from modules.bridges.Owlto.owlto import Owlto
+from modules.bridges.Stargate.stargate import Stargate
 from modules.bridges.Relay.reley import Relay
 from modules.swaps.BaseSwap.base_swap import BaseSwap
 from modules.swaps.SyncSwap.sync_swap import SyncSwap
@@ -103,6 +104,21 @@ modules_registry = {
             'Base': ['eth', 'usdc', 'usdt', 'USDbC', 'weETH', 'wstETH', 'WETH', 'DOG', 'DAI', 'DAI+'],
         },
     },
+    'Stargate': {
+        'type': ModuleType.BRIDGE,
+        'class': Stargate,
+        'supported_chains': {
+            'Ethereum': ['eth', 'usdc', 'usdt'],
+            'Optimism': ['eth', 'usdc'],
+            'Fantom': ['usdc'],
+            'BSC': ['usdt'],
+            'Polygon': ['usdc', 'usdt'],
+            'Arbitrum': ['eth', 'usdc', 'usdt'],
+            'Linea': ['eth'],
+            'Base': ['eth', 'usdc'],
+            'Avalanche': ['usdc', 'usdt'],
+            'Kava': ['usdt'],
+            'Mantle': ['usdc', 'usdt']
     'Relay': {
         'type': ModuleType.BRIDGE,
         'class': Relay,

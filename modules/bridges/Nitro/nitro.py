@@ -5,7 +5,6 @@ import aiohttp
 from decimal import Decimal
 
 import w3.utils
-from web3 import Web3
 from models.interfaces.ibridge import IBridge
 from w3.core.client import Client
 
@@ -73,7 +72,7 @@ class Nitro(IBridge):
                 'partnerId': 1,
                 'slippageTolerance': 1,
                 'destFuel': 0
-            }, proxy=self._client.w3.proxy) as response:
+            },proxy=self._client.w3.proxy) as response:
                 response.raise_for_status()
                 return await response.json()
 
