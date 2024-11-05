@@ -3,21 +3,28 @@ import random
 
 from w3.core import Client
 
-from adapters.network_adapter import convert_to_web3_network
 from models.interfaces.iparams import IParams
 from models.network import Network
 from models.token import Token
-from utils.async_mixin import AsyncMixin
+from validators.params_validator import ParamsValidator
 
 logger = logging.getLogger(__name__)
 
-class BridgeParams(AsyncMixin, IParams):
-    async def __ainit__(self, params: dict[str, any], validator, private_key: str, proxy: str) -> None:
-        self.from_network: Network = validator.validate_network(params['from_network'])
-        self.to_network: Network = validator.validate_network(params['to_network'])
+class BridgeParams(IParams):
+    def __init__(self, params: dict, validator: ParamsValidator):
+        self._params = params
+        self._validator = validator
+        self.from_network: Network
+        self.to_network: Network
+        self.token: Token
+        self.amount: float
 
-        self.token: Token = validator.validate_token(self.from_network, params['token'])
-        validator.validate_token(self.to_network, params['token'])
+    def validate_selection_params(self, supported_chains: dict) -> None:
+        self.from_network: Network = self._validator.validate_network(self._params['from_network'])
+        self.to_network: Network = self._validator.validate_network(self._params['to_network'])
+
+        self.token: Token = self._validator.validate_token(self.from_network, self._params['token'])
+        self._validator.validate_token(self.to_network, self._params['token'])
 
         if self.from_network == self.to_network:
             raise ValueError(
@@ -25,63 +32,72 @@ class BridgeParams(AsyncMixin, IParams):
                 f"Please choose different networks for bridge."
             )
 
-        client = await Client(private_key, convert_to_web3_network(self.from_network), proxy)
+        # Проверка поддержки токена модулем в обеих сетях
+        from_supported_tokens = [token.lower() for token in supported_chains[self.from_network.name]]
+        to_supported_tokens = [token.lower() for token in supported_chains[self.to_network.name]]
 
+        if self.token.symbol.lower() not in from_supported_tokens:
+            raise ValueError(f"Token '{self.token.symbol}' is not supported on network '{self.from_network.name}' by the module.")
+        if self.token.symbol.lower() not in to_supported_tokens:
+            raise ValueError(f"Token '{self.token.symbol}' is not supported on network '{self.to_network.name}' by the module.")
+
+    async def validate_amount_params(self, client: Client) -> None:
         balance = (await client.wallet.get_balance(self.token.address)).get_converted_amount()
         logger.info(f"Balance: {balance}")
 
-        amount_from = self._parse_amount(params['amount_from'], balance, params['bridge_all_balance'])
-        amount_to = self._parse_amount(params['amount_to'], balance, params['bridge_all_balance'])
+        bridge_all_balance = self._params.get('bridge_all_balance', False)
+        if bridge_all_balance:
+            amount_from = self._parse_amount(self._params.get('amount_to'), balance, bridge_all_balance)
+            amount_to = self._parse_amount(self._params.get('amount_from'), balance, bridge_all_balance)
+        else:
+            amount_from = self._parse_amount(self._params.get('amount_from'), balance, bridge_all_balance)
+            amount_to = self._parse_amount(self._params.get('amount_to'), balance, bridge_all_balance)
 
         if amount_from > amount_to:
-            raise ValueError(f"'amount_from' ({amount_from}) cannot be greater than 'amount_to' ({amount_to})")
+            raise ValueError(f"'amount_from' ({amount_from}) cannot be greater than 'amount_to' ({amount_to}).")
 
         self.amount = random.uniform(amount_from, amount_to)
-        logger.info(f"Randomly selected amount: {self.amount}")
+        logger.info(f"Randomly selected amount: {self.amount:.5f}")
 
         if self.amount <= 0:
-            raise ValueError(f"Calculated amount is negative or 0: {self.amount}")
+            raise ValueError(f"Calculated amount is negative or zero: {self.amount}")
 
-        if self.amount < params['bridge_all_balance']:
-            raise ValueError(
-                f"Selected amount ({self.amount}) is less than the minimum amount to swap ({params['min_amount_swap']})"
-            )
+        min_amount_bridge = self._params.get('min_amount_bridge', 0)
+        if self.amount < min_amount_bridge:
+            raise ValueError(f"Selected amount ({self.amount}) is less than the minimum amount to bridge ({min_amount_bridge}).")
 
     def __repr__(self):
         return (
-            f"BridgeParams(network={self.from_network}, from_token={self.to_network}, "
-            f"to_token={self.token}, amount={self.amount}"
+            f"BridgeParams(from_network={self.from_network}, to_network={self.to_network}, "
+            f"token={self.token}, amount={self.amount})"
         )
 
     def get_chain(self) -> Network:
         return self.from_network
 
     @staticmethod
-    def _parse_amount(amount_str: str, total_balance: float, swap_all_balance: bool) -> float:
-        if amount_str.endswith("%"):
+    def _parse_amount(amount_str: str, total_balance: float, bridge_all_balance: bool) -> float:
+        if not amount_str:
+            raise ValueError("Amount parameter is required.")
+        if isinstance(amount_str, str) and amount_str.endswith("%"):
             try:
                 percentage = float(amount_str.strip('%')) / 100.0
             except ValueError:
                 raise ValueError(f"Invalid percentage value: {amount_str}")
 
-            if swap_all_balance:
-                amount_to_remain = total_balance * percentage
-                amount_to_transfer = total_balance - amount_to_remain
-            else:
-                amount_to_transfer = total_balance * percentage
+            amount_to_transfer = total_balance * percentage
+            if bridge_all_balance:
+                amount_to_transfer = total_balance - amount_to_transfer
         else:
             try:
-                amount_value = float(amount_str)
-            except ValueError:
+                amount_to_transfer = float(amount_str)
+            except (ValueError, TypeError):
                 raise ValueError(f"Invalid amount value: {amount_str}")
 
-            if swap_all_balance:
-                amount_to_remain = amount_value
-                amount_to_transfer = total_balance - amount_to_remain
-            else:
-                amount_to_transfer = amount_value
+            if bridge_all_balance:
+                amount_to_transfer = total_balance - amount_to_transfer
 
         if amount_to_transfer > total_balance:
-            raise ValueError(f"Amount ({amount_to_transfer}) for transfer is greater than balance ({total_balance})")
+            raise ValueError(f"Amount ({amount_to_transfer}) is greater than the total balance ({total_balance}).")
 
         return amount_to_transfer

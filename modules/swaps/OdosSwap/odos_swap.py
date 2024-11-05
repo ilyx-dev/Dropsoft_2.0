@@ -2,13 +2,13 @@ import logging
 import aiohttp
 import w3.utils
 
-from .config_base import *
 from models.interfaces.iswap import ISwap
+from .config_odos import *
 
 logger = logging.getLogger(__name__)
 
 
-class BaseSwap(ISwap):
+class OdosSwap(ISwap):
 
     async def swap(self) -> dict:
         client = self._client
@@ -29,7 +29,7 @@ class BaseSwap(ISwap):
         path_id = await self.get_path_id(chain_id, token_from_address, token_to_address, amount, my_address)
 
         if token_from_address != ETH_ADDRESS:
-            await self.approve_token(client, token_contract, router_contract_address, amount)
+            await self.approve_token(client, token_contract, odos_router_contract, amount)
 
         quote = await self.get_swap_data(my_address, path_id)
 

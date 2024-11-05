@@ -3,11 +3,19 @@ from modules.bridges.Nitro.nitro import Nitro
 from modules.bridges.Orbiter.orbiter import Orbiter
 from modules.bridges.Owlto.owlto import Owlto
 from modules.bridges.Stargate.stargate import Stargate
+from modules.bridges.Relay.reley import Relay
 from modules.swaps.BaseSwap.base_swap import BaseSwap
 from modules.swaps.SyncSwap.sync_swap import SyncSwap
 from modules.swaps.NullXSwap.null_x_swap import NullXSwap
+from modules.swaps.OdosSwap.odos_swap import OdosSwap
+from modules.swaps.OpenOceanSwap.open_ocean_swap import OpenOceanSwap
+from modules.zora.zora_mint import ZoraMint
 
 modules_registry = {
+    'Zora.mint': {
+        'type': ModuleType.ZORA_MINT,
+        'class': ZoraMint,
+    },
     'SyncSwap': {
         'type': ModuleType.SWAP,
         'class': SyncSwap,
@@ -83,7 +91,7 @@ modules_registry = {
             'Base': ['eth', 'usdc', 'usdt'],
             'Blast': ['eth', 'usdc', 'usdt'],
             'BSC': ['eth', 'usdc', 'usdt'],
-            'Linea': ['eth', 'usdc', 'usdt'],
+            'Linea': ['eth', 'usdc', 'usdt', 'wstETH'],
             'Optimism': ['eth', 'usdc', 'usdt'],
             'Polygon': ['eth', 'usdc', 'usdt'],
             'Scroll': ['eth', 'usdc', 'usdt'],
@@ -111,6 +119,48 @@ modules_registry = {
             'Avalanche': ['usdc', 'usdt'],
             'Kava': ['usdt'],
             'Mantle': ['usdc', 'usdt']
+    'Relay': {
+        'type': ModuleType.BRIDGE,
+        'class': Relay,
+        'supported_chains': {
+            'Ethereum': ['eth', 'usdc', 'usdt', 'WBTC', 'WETH'],
+            'Optimism': ['eth','WBTC','WETH'],
+            'ZKSync': ['eth', 'usdc', 'WETH', 'WBTC'],
+            'Blast': ['eth', 'WETH',],
+            'Polygon': ['WETH', 'usdt'],
+            'Arbitrum': ['eth', 'usdc', 'usdt', 'WBTC', 'WETH'],
+            'Linea': ['eth', 'WETH'],
+            'Base': ['eth', 'usdc','WETH'],
+            'Scroll': ['eth', 'WETH']
+    'OdosSwap': {
+        'type': ModuleType.SWAP,
+        'class': OdosSwap,
+        'supported_chains': {
+            'Ethereum': ['eth', 'usdc', 'usdt', 'BNB', 'WBTC'],
+            'Arbitrum': ['eth', 'usdc', 'usdt', 'usdc.e', 'WBTC'],
+            'Avalanche': ['avax', 'eth', 'usdc', 'usdt'],
+            'Base': ['eth', 'usdc', 'usdt'],
+            'Linea': ['eth', 'usdc', 'usdt', 'wstETH'],
+            'Optimism': ['eth', 'usdc', 'usdt'],
+            'Polygon': ['eth', 'usdc', 'usdt'],
+            'Scroll': ['eth', 'usdc', 'usdt'],
+        },
+    },
+    'OpenOceanSwap': {
+        'type': ModuleType.SWAP,
+        'class': OpenOceanSwap,
+        'supported_chains': {
+            'Ethereum': ['eth', 'usdc', 'usdt', 'BNB', 'WBTC'],
+            'Arbitrum': ['eth', 'usdc', 'usdt', 'usdc.e', 'WBTC'],
+            'Avalanche': ['avax', 'eth', 'usdc', 'usdt'],
+            'Base': ['eth', 'usdc', 'usdt'],
+            'Linea': ['eth', 'usdc', 'usdt', 'wstETH'],
+            'Optimism': ['eth', 'usdc', 'usdt'],
+            'Polygon': ['eth', 'usdc', 'usdt'],
+            'Scroll': ['eth', 'usdc', 'usdt'],
+            'Zksync': ['eth', 'usdt', 'usdc', 'wbtc'],
+            'BSC': ['eth', 'usdc', 'usdt'],
+            'Blast': ['eth', 'usdc', 'usdt'],
         },
     },
 }

@@ -125,6 +125,7 @@ class SyncSwap(ISwap):
 
 
     async def approve_token(self, client, token_contract, spender, amount):
+
         owner = client.wallet.public_key
         current_allowance = await token_contract.functions.allowance(owner, spender).call()
         logger.info(f"Allowance: {current_allowance}")

@@ -7,6 +7,7 @@ from datetime import datetime
 from configs.module_registry import modules_registry
 from managers.config_manager import ConfigManager
 from managers.module_factory import ModuleFactory
+from managers.module_selector import ModuleSelector
 from managers.proxy_manager import ProxyManager
 from managers.scenario_manager import ScenarioManager
 from managers.wallet_processor import WalletProcessor
@@ -39,7 +40,8 @@ async def main():
     config_manager = ConfigManager(config_file)
     scenario_manager = ScenarioManager(scenarios_file)
 
-    module_factory = ModuleFactory(modules_registry)
+    module_selector = ModuleSelector(modules_registry)
+    module_factory = ModuleFactory(modules_registry, module_selector)
     proxy_manager = ProxyManager(proxies_file, config_manager.get_proxy_manager_config())
     executor = WalletProcessor(private_keys, recipients, proxy_manager, scenario_manager, module_factory, modules_registry, config_manager.get_wallet_processor_config())
 
@@ -74,6 +76,7 @@ def setup_logger():
 
     w3_logger = logging.getLogger('w3')
     w3_logger.setLevel(logging.DEBUG)
+    w3_logger.propagate = False
     w3_logger.addHandler(file_handler)
     w3_logger.addHandler(console_handler)
 
