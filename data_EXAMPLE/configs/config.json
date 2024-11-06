@@ -7,6 +7,7 @@
 
   "SLEEP_BETWEEN_MODULES": [1, 15],
   "WALLET_RANDOMIZER": true,
+  "WAIT_VERIFY_MODULE": 60,
 
   "CHECK_GWEI": true,
   "MAX_GWEI": 100,
