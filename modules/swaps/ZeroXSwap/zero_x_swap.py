@@ -6,12 +6,12 @@ from eth_account import Account
 from w3.core import Client
 from models.params.swap_params import SwapParams
 from models.interfaces.iswap import ISwap
-from .config_nullx import *
+from .config_zerox import *
 
 logger = logging.getLogger(__name__)
 
 
-class NullXSwap(ISwap):
+class ZeroXSwap(ISwap):
 
     def __init__(self, client: Client, params: SwapParams):
         super().__init__(client, params)
@@ -32,7 +32,7 @@ class NullXSwap(ISwap):
 
         my_address = w3.utils.to_checksum_address(client.wallet.public_key)
         token_contract = self._client.contracts.get_erc20_contract(token_in_address)
-        spender = w3.utils.to_checksum_address(NULLX_PERMIT2_ADDRESS)
+        spender = w3.utils.to_checksum_address(ZEROX_PERMIT2_ADDRESS)
 
         if token_in_address != NATIVE_ADDRESS:
             await self.approve_token(client, token_contract, spender, sell_amount)
@@ -71,7 +71,7 @@ class NullXSwap(ISwap):
         }
         headers = {
             'Content-Type': 'application/json',
-            '0x-api-key': NULLX_API_KEY,
+            '0x-api-key': ZEROX_API_KEY,
             '0x-version': 'v2'
         }
         async with aiohttp.ClientSession() as session:

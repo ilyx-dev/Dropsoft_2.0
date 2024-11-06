@@ -18,9 +18,14 @@ class ParamsManager:
 
         self.supported_chains = self._module_entry.get('supported_chains')
         self.module_type = self._module_entry['type']
-        params_class = module_type_to_params_class.get(self.module_type)
+
+        # First, try to get the params_class from the module entry
+        params_class = self._module_entry.get('params_class')
         if not params_class:
-            raise ValueError(f"No parameter class for module type '{self.module_type.value}'.")
+            # Fallback to module_type_to_params_class mapping
+            params_class = module_type_to_params_class.get(self.module_type)
+            if not params_class:
+                raise ValueError(f"No parameter class for module type '{self.module_type.value}'.")
 
         validator = ParamsValidator(module_name, modules_registry)
         self._params = params_class(params, validator)

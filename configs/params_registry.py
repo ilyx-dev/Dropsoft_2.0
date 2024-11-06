@@ -6,5 +6,4 @@ from models.params.zora_mint_params import ZoraMintParams
 module_type_to_params_class = {
     ModuleType.SWAP: SwapParams,
     ModuleType.BRIDGE: BridgeParams,
-    ModuleType.ZORA_MINT: ZoraMintParams
 }

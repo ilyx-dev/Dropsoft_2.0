@@ -1,4 +1,5 @@
 from models.enums.module_type import ModuleType
+from models.params.zora_mint_params import ZoraMintParams
 from modules.bridges.Nitro.nitro import Nitro
 from modules.bridges.Orbiter.orbiter import Orbiter
 from modules.bridges.Owlto.owlto import Owlto
@@ -6,15 +7,16 @@ from modules.bridges.Stargate.stargate import Stargate
 from modules.bridges.Relay.reley import Relay
 from modules.swaps.BaseSwap.base_swap import BaseSwap
 from modules.swaps.SyncSwap.sync_swap import SyncSwap
-from modules.swaps.NullXSwap.null_x_swap import NullXSwap
+from modules.swaps.ZeroXSwap.zero_x_swap import ZeroXSwap
 from modules.swaps.OdosSwap.odos_swap import OdosSwap
 from modules.swaps.OpenOceanSwap.open_ocean_swap import OpenOceanSwap
 from modules.zora.zora_mint import ZoraMint
 
 modules_registry = {
     'Zora.mint': {
-        'type': ModuleType.ZORA_MINT,
+        'type': ModuleType.CUSTOM,
         'class': ZoraMint,
+        'params_class': ZoraMintParams
     },
     'SyncSwap': {
         'type': ModuleType.SWAP,
@@ -81,7 +83,7 @@ modules_registry = {
     },
     '0xSwap': {
         'type': ModuleType.SWAP,
-        'class': NullXSwap,
+        'class': ZeroXSwap,
         'supported_chains': {
             'Ethereum': ['eth', 'usdc', 'usdt', 'BNB', 'WBTC'],
             'Arbitrum': ['eth', 'usdc', 'usdt', 'usdc.e', 'WBTC'],
