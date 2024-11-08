@@ -70,7 +70,7 @@ class BaseSwap(ISwap):
         }
 
         async with aiohttp.ClientSession() as session:
-            async with session.post('https://api.odos.xyz/sor/quote/v2', json=payload) as response:
+            async with session.post('https://api.odos.xyz/sor/quote/v2', json=payload, proxy=self._client.w3.proxy) as response:
                 data = await response.json()
                 return data["pathId"]
 
@@ -88,7 +88,7 @@ class BaseSwap(ISwap):
         }
 
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=payload, headers=headers) as response:
+            async with session.post(url, json=payload, headers=headers, proxy=self._client.w3.proxy) as response:
                 return await response.json()
 
 
