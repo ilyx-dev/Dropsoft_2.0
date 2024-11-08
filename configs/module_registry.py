@@ -108,7 +108,7 @@ modules_registry = {
         'supported_chains': {
             'Ethereum': ['eth', 'usdc', 'usdt', 'BNB', 'WBTC'],
             'Arbitrum': ['eth', 'usdc', 'usdt', 'usdc.e', 'WBTC'],
-            'Avalanche': ['avax', 'eth', 'usdc', 'usdt'],
+            'Avalanche': ['avax', 'usdc', 'usdt'],
             'Base': ['eth', 'usdc', 'usdt'],
             'Linea': ['eth', 'usdc', 'usdt', 'wstETH'],
             'Optimism': ['eth', 'usdc', 'usdt'],
@@ -128,7 +128,6 @@ modules_registry = {
             'Optimism': ['eth', 'usdc', 'usdt'],
             'Polygon': ['eth', 'usdc', 'usdt'],
             'Scroll': ['eth', 'usdc', 'usdt'],
-            'Zksync': ['eth', 'usdt', 'usdc', 'wbtc'],
             'BSC': ['eth', 'usdc', 'usdt'],
             'Blast': ['eth', 'usdc', 'usdt'],
         },
