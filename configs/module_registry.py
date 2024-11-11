@@ -11,6 +11,7 @@ from modules.swaps.ZeroXSwap.zero_x_swap import ZeroXSwap
 from modules.swaps.OdosSwap.odos_swap import OdosSwap
 from modules.swaps.OpenOceanSwap.open_ocean_swap import OpenOceanSwap
 from modules.zora.zora_mint import ZoraMint
+from modules.swaps.SymbiosisSwap.symbiosis_swap import SymbiosisSwap
 
 modules_registry = {
     'Zora.mint': {
@@ -163,4 +164,21 @@ modules_registry = {
             'Blast': ['eth', 'usdc', 'usdt'],
         },
     },
+    'SymbiosisSwap': {
+        'type': ModuleType.SWAP,
+        'class': SymbiosisSwap,
+        'supported_chains': {
+            'Ethereum': ['eth', 'usdc', 'usdt', 'BNB', 'WBTC'],
+            'Arbitrum': ['eth', 'usdc', 'usdt', 'usdc.e', 'WBTC'],
+            'Avalanche': ['avax', 'eth', 'usdc', 'usdt'],
+            'Base': ['eth', 'usdc', 'usdt'],
+            'Linea': ['eth', 'usdc', 'usdt', 'wstETH'],
+            'Optimism': ['eth', 'usdc', 'usdt'],
+            'Polygon': ['eth', 'usdc', 'usdt'],
+            'Scroll': ['eth', 'usdc', 'usdt'],
+            'BSC': ['eth', 'usdc', 'usdt'],
+            'Blast': ['eth', 'usdc', 'usdt'],
+            'ZKSync': ['eth', 'usdc', 'usdt']
+        },
+    }
 }
