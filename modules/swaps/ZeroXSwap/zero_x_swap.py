@@ -75,7 +75,7 @@ class ZeroXSwap(ISwap):
             '0x-version': 'v2'
         }
         async with aiohttp.ClientSession() as session:
-            async with session.get('https://api.0x.org/swap/permit2/quote', params=params, headers=headers) as response:
+            async with session.get('https://api.0x.org/swap/permit2/quote', params=params, headers=headers, proxy=self._client.w3.proxy) as response:
                 return await response.json()
 
 

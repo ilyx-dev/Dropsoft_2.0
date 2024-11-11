@@ -26,10 +26,13 @@ class OdosSwap(ISwap):
         decimals = await erc20_contract.functions.decimals().call() if token_from_address != ETH_ADDRESS else 18
         amount = (int(amount * (10 ** decimals)))
 
+        router = await self.get_contract_address(chain_id)
+        router_contract = router['address']
+
         path_id = await self.get_path_id(chain_id, token_from_address, token_to_address, amount, my_address)
 
         if token_from_address != ETH_ADDRESS:
-            await self.approve_token(client, token_contract, odos_router_contract, amount)
+            await self.approve_token(client, token_contract, router_contract, amount)
 
         quote = await self.get_swap_data(my_address, path_id)
 
@@ -47,6 +50,14 @@ class OdosSwap(ISwap):
             'to': token_to.symbol,
             'amount': amount,
         }
+
+
+    async def get_contract_address(self, chain_id):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'https://api.odos.xyz/info/router/v2/{chain_id}', proxy=self._client.w3.proxy) as response:
+                data = await response.json()
+                print(data)
+                return data
 
 
     async def get_path_id(self, chain_id, token_from_address, token_to_address, amount, my_address):
@@ -70,7 +81,7 @@ class OdosSwap(ISwap):
         }
 
         async with aiohttp.ClientSession() as session:
-            async with session.post('https://api.odos.xyz/sor/quote/v2', json=payload) as response:
+            async with session.post('https://api.odos.xyz/sor/quote/v2', json=payload, proxy=self._client.w3.proxy) as response:
                 data = await response.json()
                 return data["pathId"]
 
@@ -88,7 +99,7 @@ class OdosSwap(ISwap):
         }
 
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=payload, headers=headers) as response:
+            async with session.post(url, json=payload, headers=headers, proxy=self._client.w3.proxy) as response:
                 return await response.json()
 
 
